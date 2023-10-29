@@ -7,6 +7,12 @@
 
 ### Resources
 
+**Documentation**
+
+[GeeksForGeeks MiniMax Algorithm](https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-1-introduction/)
+
+**Videos**
+
 [MiniMax Overview](https://www.youtube.com/watch?v=l-hh51ncgDI)  
 [MIT MiniMax Adversarial Algorithm](https://www.youtube.com/watch?v=STjW3eH0Cik&t=372s)  
 [John Levin Explaination of Alpha Beta ](https://www.youtube.com/watch?v=zp3VMe0Jpf8&t=308s)  
