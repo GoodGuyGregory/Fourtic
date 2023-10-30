@@ -1,6 +1,9 @@
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,12 +11,10 @@ import java.util.Scanner;
 public class FourticReader {
 
     public char[][] intialBoard;
-    public static final int WIDTH;
-    public static final int HEIGHT;
+    public static final int WIDTH = 4;
+    public static final int HEIGHT = 4;
 
     public FourticReader() {
-        this.WIDTH = 4;
-        this.HEIGHT = 4;
     }
 
     /**
@@ -27,15 +28,35 @@ public class FourticReader {
     // https://www.geeksforgeeks.org/different-ways-reading-text-file-java/
 
     public void determineInitialGame(String fileName) {
-        File fourticState = new File(fileName);
-        try (// read the file's content with the scanner
-                Scanner fileReader = new Scanner(fourticState)) {
-        } catch (FileNotFoundException e) {
+        try {// read the file's content with the scanner
+
+            List<String> foundLines = new ArrayList<>();
+
+            // File path is passed as parameter
+            File file = new File(fileName);
+
+            // Note: Double backquote is to avoid compiler
+            // interpret words
+            // like \test as \t (ie. as a escape sequence)
+
+            // Creating an object of BufferedReader class
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            // Declaring a string variable
+            String boardLine;
+            // Condition holds true till
+            // there is character in a string
+            while ((boardLine = br.readLine()) != null) {
+
+                // Print the string
+                System.out.println(boardLine);
+                foundLines.add(boardLine);
+            }
+
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        List<String> foundLines = new ArrayList<>();
 
     }
 
