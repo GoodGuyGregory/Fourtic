@@ -140,13 +140,13 @@ public class FourticReader {
      */
 
     /**
-     * number of player's caculated cide Cell scores
+     * number of player's caculated side Cell scores
      * 
      * @param currentBoard
      * @param playerSymbol
      * @return playerSideCellScore
      */
-    public int scorePlayerEnds(char[][] currentBoard, char playerSymbol) {
+    public int scorePlayerSideCells(char[][] currentBoard, char playerSymbol) {
         int playerScore = 0;
         // check first row
         for (int i = 0; i < currentBoard[0].length; i++) {
@@ -177,12 +177,53 @@ public class FourticReader {
 
         // check the last columm
         for (int i = 0; i < currentBoard.length; i++) {
-            if (currentBoard[i][0] == playerSymbol) {
-                playerScore++;
+            int foundCount = 0;
+            if (currentBoard[i][3] == playerSymbol) {
+                foundCount++;
+            }
+
+            if (foundCount > 3) {
+                playerScore += 6;
+            } else {
+                playerScore += foundCount;
+            }
+        }
+
+        // check last row
+        for (int i = 0; i < currentBoard[0].length; i++) {
+            int foundCount = 0;
+            if (currentBoard[3][i] == playerSymbol) {
+                foundCount++;
+            }
+            if (foundCount > 3) {
+                playerScore += 6;
+            } else {
+                playerScore += foundCount;
             }
         }
 
         return playerScore;
     }
 
+    /**
+     * numver of player's calculated diagonals
+     * 
+     * @param currentBoard
+     * @param playerSymbol
+     * @return player's diagonal score
+     */
+    public int scorePlayerDiagonals(char[][] currentBoard, char playerSymbol) {
+
+        // check right and left diagonals on the first two rows of the board
+
+        // Right: Diagonals
+        for (int i = 0; i < currentBoard.length; i++) {
+
+        }
+
+        // Left Diagonals
+        for (int i = 0; i < currentBoard.length; i++) {
+
+        }
+    }
 }
