@@ -23,7 +23,7 @@ public class FourticReader {
         return this.xScore;
     }
 
-    public void setXscore(int calculatedScore) {
+    public void setXScore(int calculatedScore) {
         this.xScore = calculatedScore;
     }
 
@@ -32,7 +32,7 @@ public class FourticReader {
     }
 
     public void setOScore(int calculatedScore) {
-        this.xScore = calculatedScore;
+        this.oScore = calculatedScore;
     }
 
     public void setPlayerAtTurn(char playerSymbol) {
@@ -88,7 +88,7 @@ public class FourticReader {
             // determine currentScore for the maximizing player
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         }
 
@@ -108,16 +108,27 @@ public class FourticReader {
         setPlayerAtTurn(this.determinePlayerAtTurn(providedBoard));
 
         // pass the player at turn as playerOne
-        this.determineEachPlayerInitialScore(providedBoard, 'X', 'O');
+        this.determinePlayerScores(providedBoard, 'X', 'O');
 
     }
 
     // set's x's and o's initial scores
 
-    private void determineEachPlayerInitialScore(char[][] providedBoard, char playerOne, char playerTwo) {
+    private void determinePlayerScores(char[][] providedBoard, char playerOne, char playerTwo) {
+        int xScore = 0;
+        int oScore = 0;
 
         xScore += checkPlayerRowColumnScores(providedBoard, playerOne);
         oScore += checkPlayerRowColumnScores(providedBoard, playerTwo);
+
+        xScore += scorePlayerDiagonals(providedBoard, playerOne);
+        oScore += scorePlayerDiagonals(providedBoard, playerTwo);
+
+        xScore += scorePlayerSideCells(providedBoard, playerOne);
+        oScore += scorePlayerSideCells(providedBoard, playerTwo);
+
+        this.setXScore(xScore);
+        this.setOScore(oScore);
 
     }
 
@@ -150,7 +161,7 @@ public class FourticReader {
 
     /**
      * Scoring:
-     * every Row of 3 is +3
+     * every row of 3 is +3
      * every row of 4 is +6
      * every side or corner is worth +1
      */
@@ -166,63 +177,40 @@ public class FourticReader {
         int playerScore = 0;
         // check first row
         for (int i = 0; i < currentBoard[0].length; i++) {
-            int foundCount = 0;
             if (currentBoard[0][i] == playerSymbol) {
-                foundCount++;
-            }
-            if (foundCount > 3) {
-                playerScore += 6;
-            } else {
-                playerScore += foundCount;
+                playerScore += 1;
             }
         }
 
-        // check first column
-        for (int i = 0; i < currentBoard.length; i++) {
-            int foundCount = 0;
-            if (currentBoard[i][0] == playerSymbol) {
-                foundCount++;
-            }
-
-            if (foundCount > 3) {
-                playerScore += 6;
-            } else {
-                playerScore += foundCount;
-            }
+        // check first middle column
+        if (currentBoard[1][0] == playerSymbol) {
+            playerScore++;
+        }
+        if (currentBoard[2][0] == playerSymbol) {
+            playerScore++;
         }
 
-        // check the last columm
-        for (int i = 0; i < currentBoard.length; i++) {
-            int foundCount = 0;
-            if (currentBoard[i][3] == playerSymbol) {
-                foundCount++;
-            }
-
-            if (foundCount > 3) {
-                playerScore += 6;
-            } else {
-                playerScore += foundCount;
-            }
+        // check the last middle column
+        if (currentBoard[1][3] == playerSymbol) {
+            playerScore++;
+        }
+        if (currentBoard[2][3] == playerSymbol) {
+            playerScore++;
         }
 
         // check last row
         for (int i = 0; i < currentBoard[0].length; i++) {
-            int foundCount = 0;
             if (currentBoard[3][i] == playerSymbol) {
-                foundCount++;
+                playerScore++;
             }
-            if (foundCount > 3) {
-                playerScore += 6;
-            } else {
-                playerScore += foundCount;
-            }
+
         }
 
         return playerScore;
     }
 
     /**
-     * numver of player's calculated diagonals
+     * number of player's calculated diagonals
      * 
      * @param currentBoard
      * @param playerSymbol
@@ -236,41 +224,47 @@ public class FourticReader {
         // Right Diagonal:
 
         // top diagonal:
-        if (currentBoard[0][2] == playerSymbol && 
-        currentBoard[1][1] == playerSymbol && currentBoard[2][0] == playerSymbol) {
+        if (currentBoard[0][2] == playerSymbol &&
+                currentBoard[1][1] == playerSymbol && currentBoard[2][0] == playerSymbol) {
             playerScore += 3;
         }
         // check middle diagonal:
-        if (currentBoard[0][3] == playerSymbol && currentBoard[1][2] == playerSymbol 
-        && currentBoard[2][1] == playerSymbol && currentBoard[3][0] == playerSymbol) {
+        if (currentBoard[0][3] == playerSymbol && currentBoard[1][2] == playerSymbol
+                && currentBoard[2][1] == playerSymbol && currentBoard[3][0] == playerSymbol) {
             playerScore += 6;
-        } else if ((currentBoard[0][3] == playerSymbol && currentBoard[1][2] == playerSymbol 
-        && currentBoard[2][1] == playerSymbol ) || (currentBoard[3][0] == playerSymbol && currentBoard[2][1] == playerSymbol && currentBoard[1][3] == playerSymbol) {
+        } else if ((currentBoard[0][3] == playerSymbol && currentBoard[1][2] == playerSymbol
+                && currentBoard[2][1] == playerSymbol)
+                || (currentBoard[3][0] == playerSymbol && currentBoard[2][1] == playerSymbol
+                        && currentBoard[1][3] == playerSymbol)) {
             playerScore += 3;
         }
         // bottom diagonal
-        if (currentBoard[1][3] == playerSymbol && 
-        currentBoard[2][2] == playerSymbol && currentBoard[3][1] == playerSymbol) {
+        if (currentBoard[1][3] == playerSymbol &&
+                currentBoard[2][2] == playerSymbol && currentBoard[3][1] == playerSymbol) {
             playerScore += 3;
         }
 
         // Left Diagonal:
 
         // bottom diagonal
-        if (currentBoard[1][0] == playerSymbol && currentBoard[2][1] == playerSymbol && currentBoard[3][2] == playerSymbol) {
+        if (currentBoard[1][0] == playerSymbol && currentBoard[2][1] == playerSymbol
+                && currentBoard[3][2] == playerSymbol) {
             playerScore += 3;
         }
         // middle diagonal:
-        if (currentBoard[0][0] == playerSymbol && currentBoard[1][1] == playerSymbol 
-        && currentBoard[2][2] == playerSymbol && currentBoard[3][3] == playerSymbol) {
+        if (currentBoard[0][0] == playerSymbol && currentBoard[1][1] == playerSymbol
+                && currentBoard[2][2] == playerSymbol && currentBoard[3][3] == playerSymbol) {
             playerScore += 6;
-        } else if ((currentBoard[3][3] == playerSymbol && currentBoard[2][2] == playerSymbol 
-        && currentBoard[1][1] == playerSymbol ) || (currentBoard[0][0] == playerSymbol && currentBoard[1][1] == playerSymbol && currentBoard[2][2] == playerSymbol)) {
+        } else if ((currentBoard[3][3] == playerSymbol && currentBoard[2][2] == playerSymbol
+                && currentBoard[1][1] == playerSymbol)
+                || (currentBoard[0][0] == playerSymbol && currentBoard[1][1] == playerSymbol
+                        && currentBoard[2][2] == playerSymbol)) {
             playerScore += 3;
         }
         //
         // top row diagonal:
-        if (currentBoard[0][1] == playerSymbol && currentBoard[1][2] == playerSymbol && currentBoard[2][3] == playerSymbol) {
+        if (currentBoard[0][1] == playerSymbol && currentBoard[1][2] == playerSymbol
+                && currentBoard[2][3] == playerSymbol) {
             playerScore += 3;
         }
 
@@ -278,15 +272,37 @@ public class FourticReader {
 
     }
 
+    /**
+     * number of player's calculated diagonals
+     * 
+     * @param currentBoard
+     * @param playerSymbol
+     * @return player's diagonal score
+     */
     public int checkPlayerRowColumnScores(char[][] currentBoard, char playerSymbol) {
         int playerScore = 0;
 
         // checks all rows for the same character
         for (int i = 0; i < currentBoard.length; i++) {
             int symbolCount = 0;
+
             for (int j = 0; j < currentBoard[0].length; j++) {
                 if (currentBoard[i][j] == playerSymbol) {
-                    symbolCount++;
+                    if (j == 0) {
+                        symbolCount++;
+                    } else {
+                        // checks for consequtive matches within a row iteration
+                        if (currentBoard[i][j - 1] == playerSymbol) {
+                            symbolCount++;
+                        } else {
+                            if (symbolCount >= 1) {
+                                symbolCount = 0;
+                            } else {
+                                symbolCount++;
+                            }
+
+                        }
+                    }
                 }
             }
             if (symbolCount > 3) {
@@ -301,7 +317,20 @@ public class FourticReader {
             int symbolCount = 0;
             for (int j = 0; j < currentBoard.length; j++) {
                 if (currentBoard[j][i] == playerSymbol) {
-                    symbolCount++;
+                    if (j == 0) {
+                        symbolCount++;
+                    } else {
+                        // checks for consequtive matches within a row iteration
+                        if (currentBoard[j - 1][i] == playerSymbol) {
+                            symbolCount++;
+                        } else {
+                            if (symbolCount >= 1) {
+                                symbolCount = 0;
+                            } else {
+                                symbolCount++;
+                            }
+                        }
+                    }
                 }
             }
             if (symbolCount > 3) {
