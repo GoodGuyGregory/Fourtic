@@ -17,6 +17,8 @@ public class FourticReader {
     private int xScore;
     private int oScore;
 
+    private char playerAtTurn;
+
     public int getXScore() {
         return this.xScore;
     }
@@ -31,6 +33,14 @@ public class FourticReader {
 
     public void setOScore(int calculatedScore) {
         this.xScore = calculatedScore;
+    }
+
+    public void setPlayerAtTurn(char playerSymbol) {
+        this.playerAtTurn = playerSymbol;
+    }
+
+    public char getPlayerAtTurn() {
+        return this.playerAtTurn;
     }
 
     public FourticReader() {
@@ -95,13 +105,19 @@ public class FourticReader {
         }
 
         // determine the player whose next at play
-        this.determinePlayerAtTurn(providedBoard);
+        setPlayerAtTurn(this.determinePlayerAtTurn(providedBoard));
 
-        this.determineEachPlayerInitialScore(providedBoard);
+        // pass the player at turn as playerOne
+        this.determineEachPlayerInitialScore(providedBoard, 'X', 'O');
 
     }
 
-    private void determineEachPlayerInitialScore(char[][] providedBoard, char player) {
+    // set's x's and o's initial scores
+
+    private void determineEachPlayerInitialScore(char[][] providedBoard, char playerOne, char playerTwo) {
+
+        xScore += checkPlayerRowColumnScores(providedBoard, playerOne);
+        oScore += checkPlayerRowColumnScores(providedBoard, playerTwo);
 
     }
 
@@ -214,16 +230,88 @@ public class FourticReader {
      */
     public int scorePlayerDiagonals(char[][] currentBoard, char playerSymbol) {
 
+        int playerScore = 0;
         // check right and left diagonals on the first two rows of the board
 
-        // Right: Diagonals
-        for (int i = 0; i < currentBoard.length; i++) {
+        // Right Diagonal:
 
+        // top diagonal:
+        if (currentBoard[0][2] == playerSymbol && 
+        currentBoard[1][1] == playerSymbol && currentBoard[2][0] == playerSymbol) {
+            playerScore += 3;
+        }
+        // check middle diagonal:
+        if (currentBoard[0][3] == playerSymbol && currentBoard[1][2] == playerSymbol 
+        && currentBoard[2][1] == playerSymbol && currentBoard[3][0] == playerSymbol) {
+            playerScore += 6;
+        } else if ((currentBoard[0][3] == playerSymbol && currentBoard[1][2] == playerSymbol 
+        && currentBoard[2][1] == playerSymbol ) || (currentBoard[3][0] == playerSymbol && currentBoard[2][1] == playerSymbol && currentBoard[1][3] == playerSymbol) {
+            playerScore += 3;
+        }
+        // bottom diagonal
+        if (currentBoard[1][3] == playerSymbol && 
+        currentBoard[2][2] == playerSymbol && currentBoard[3][1] == playerSymbol) {
+            playerScore += 3;
         }
 
-        // Left Diagonals
-        for (int i = 0; i < currentBoard.length; i++) {
+        // Left Diagonal:
 
+        // bottom diagonal
+        if (currentBoard[1][0] == playerSymbol && currentBoard[2][1] == playerSymbol && currentBoard[3][2] == playerSymbol) {
+            playerScore += 3;
         }
+        // middle diagonal:
+        if (currentBoard[0][0] == playerSymbol && currentBoard[1][1] == playerSymbol 
+        && currentBoard[2][2] == playerSymbol && currentBoard[3][3] == playerSymbol) {
+            playerScore += 6;
+        } else if ((currentBoard[3][3] == playerSymbol && currentBoard[2][2] == playerSymbol 
+        && currentBoard[1][1] == playerSymbol ) || (currentBoard[0][0] == playerSymbol && currentBoard[1][1] == playerSymbol && currentBoard[2][2] == playerSymbol)) {
+            playerScore += 3;
+        }
+        //
+        // top row diagonal:
+        if (currentBoard[0][1] == playerSymbol && currentBoard[1][2] == playerSymbol && currentBoard[2][3] == playerSymbol) {
+            playerScore += 3;
+        }
+
+        return playerScore;
+
+    }
+
+    public int checkPlayerRowColumnScores(char[][] currentBoard, char playerSymbol) {
+        int playerScore = 0;
+
+        // checks all rows for the same character
+        for (int i = 0; i < currentBoard.length; i++) {
+            int symbolCount = 0;
+            for (int j = 0; j < currentBoard[0].length; j++) {
+                if (currentBoard[i][j] == playerSymbol) {
+                    symbolCount++;
+                }
+            }
+            if (symbolCount > 3) {
+                playerScore += 6;
+            } else if (symbolCount == 3) {
+                playerScore += 3;
+            }
+        }
+
+        // check columns for the same character
+        for (int i = 0; i < currentBoard.length; i++) {
+            int symbolCount = 0;
+            for (int j = 0; j < currentBoard.length; j++) {
+                if (currentBoard[j][i] == playerSymbol) {
+                    symbolCount++;
+                }
+            }
+            if (symbolCount > 3) {
+                playerScore += 6;
+            } else if (symbolCount == 3) {
+                playerScore += 3;
+            }
+        }
+
+        return playerScore;
+
     }
 }
