@@ -84,7 +84,7 @@ public class Homework {
         } else if ((currentBoard[0][3] == playerSymbol && currentBoard[1][2] == playerSymbol
                 && currentBoard[2][1] == playerSymbol)
                 || (currentBoard[3][0] == playerSymbol && currentBoard[2][1] == playerSymbol
-                        && currentBoard[1][3] == playerSymbol)) {
+                        && currentBoard[1][2] == playerSymbol)) {
             playerScore += 3;
         }
         // bottom diagonal
@@ -122,7 +122,7 @@ public class Homework {
     }
 
     /**
-     * number of player's calculated diagonals
+     * number of player's calculated rows
      * 
      * @param currentBoard
      * @param playerSymbol
@@ -221,7 +221,17 @@ public class Homework {
 
     }
 
+    public static void printCurrentPosition(char[][] position) {
+        for (int i = 0; i < position.length; i++) {
+            for (int j = 0; j < position[0].length; j++) {
+                System.out.print(position[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
     public static int determinePlayerScore(char[][] position, char playerSymbol) {
+        // printCurrentPosition(position);
         int playerOneScore = 0;
         // check rows
         playerOneScore += checkPlayerRowColumnScores(position, playerSymbol);
@@ -243,15 +253,16 @@ public class Homework {
 
         if (depth == 0 || gameComplete(position)) {
             return determinePlayerScore(position, playerSymbol);
+
         }
         int value = Integer.MIN_VALUE;
         List<int[]> availableMoves = getMoves(position);
         for (int[] move : availableMoves) {
             position[move[0]][move[1]] = playerSymbol;
-            playerSymbol = swapPlayer(playerSymbol);
-            int oppositePlayerValue = -1 * negaMax(position, depth - 1, playerSymbol);
+            char opponentSymbol = swapPlayer(playerSymbol);
+            int oppositePlayerValue = -1 * negaMax(position, depth - 1, opponentSymbol);
             value = Math.max(value, oppositePlayerValue);
-            // undo that previous move made to check decision tree further...
+            // // undo that previous move made to check decision tree further...
             position[move[0]][move[1]] = '.';
         }
         return value;

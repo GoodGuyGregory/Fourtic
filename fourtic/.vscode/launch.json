@@ -9,7 +9,7 @@
             "name": "Homework",
             "request": "launch",
             "mainClass": "Homework",
-            "args": "\\main\\play-2.txt"
+            "args": "\\main\\play-7.txt"
         }
     ]
 }
