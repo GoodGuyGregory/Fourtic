@@ -76,7 +76,7 @@ public class FourticReader {
             // Condition holds true till
             // there is character in a string
             while ((boardLine = buffReader.readLine()) != null) {
-                System.out.println(boardLine);
+                // System.out.println(boardLine);
                 foundLines.add(boardLine);
             }
 
@@ -103,6 +103,8 @@ public class FourticReader {
                 providedBoard[i][j] = foundLines.get(i).charAt(j);
             }
         }
+
+        this.intialBoard = providedBoard;
 
         // determine the player whose next at play
         setPlayerAtTurn(this.determinePlayerAtTurn(providedBoard));
@@ -140,21 +142,26 @@ public class FourticReader {
     public char determinePlayerAtTurn(char[][] providedBoard) {
 
         int xCount = 0;
+        int oCount = 0;
         // determine first player to move.
         for (int i = 0; i < providedBoard.length; i++) {
             for (int j = 0; j < providedBoard[0].length; j++) {
                 if (providedBoard[i][j] == 'X') {
                     xCount++;
+                } else {
+                    if (providedBoard[i][j] == 'O') {
+                        oCount++;
+                    }
                 }
             }
         }
 
         // X's turn
-        if (xCount % 2 == 0) {
-            return 'X';
-        } else {
-            // O's turn
+        if (xCount > oCount) {
             return 'O';
+        } else {
+            // X's turn
+            return 'X';
         }
 
     }
