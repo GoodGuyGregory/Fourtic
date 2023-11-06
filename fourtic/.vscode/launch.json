@@ -6,6 +6,12 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FourticPlay",
+            "request": "launch",
+            "mainClass": "FourticPlay"
+        },
+        {
+            "type": "java",
             "name": "Homework",
             "request": "launch",
             "mainClass": "Homework",
