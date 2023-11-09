@@ -5,7 +5,8 @@ import java.util.*;
 public class FourticPlay {
 
     public char[][] initialPosition;
-    public int[] bestMove;
+
+    public Map<Integer, int[]> moves = new HashMap<Integer, int[]>();
 
     public FourticPlay() {
 
@@ -308,7 +309,7 @@ public class FourticPlay {
     public int negaMax(char[][] position, int depth, char playerSymbol) {
 
         if (depth == 0 || gameComplete(position)) {
-            return determinePlayerScore(position, playerSymbol);
+            return determineSinglePlayerScore(position, playerSymbol);
 
         }
         int value = Integer.MIN_VALUE;
@@ -319,9 +320,10 @@ public class FourticPlay {
             char opponentSymbol = swapPlayer(playerSymbol);
             int oppositePlayerValue = -1 * negaMax(position, depth - 1, opponentSymbol);
             value = Math.max(value, oppositePlayerValue);
-            if (playerSymbol == 'O') {
-                this.bestMove = bestMove;
+            if (playerSymbol == 'O' || opponentSymbol == 'O') {
+                this.moves.put(value, bestMove);
             }
+
             // // undo that previous move made to check decision tree further...
             position[move[0]][move[1]] = '.';
         }
@@ -358,15 +360,34 @@ public class FourticPlay {
             System.out.println("===================================");
             System.out.println("Computer's Move");
             Thread.sleep(5000);
-            fourtic.negaMax(fourtic.initialPosition, 4, 'O');
-            fourtic.makeMove(fourtic.initialPosition, fourtic.bestMove[0], fourtic.bestMove[1], 'O');
+            List<int[]> availableMoves = getMoves(fourtic.initialPosition);
+            if (availableMoves.size() > 1) {
+                fourtic.negaMax(fourtic.initialPosition, 4, 'O');
+                // find the highest value move and play it.
+                int bestValue = Integer.MIN_VALUE;
+                for (Integer moveValue : fourtic.moves.keySet()) {
+                    if (moveValue > bestValue) {
+                        bestValue = moveValue;
+                    }
+                }
+                int[] bestMove = fourtic.moves.get(bestValue);
+
+                if (fourtic.checkMove(bestMove[0], bestMove[1])) {
+                    fourtic.makeMove(fourtic.initialPosition, bestMove[0], bestMove[1], 'O');
+                }
+            } else {
+
+                fourtic.makeMove(fourtic.initialPosition, availableMoves.get(0)[0], availableMoves.get(0)[1], 'O');
+            }
+
         }
 
         System.out.println("===================================");
-        System.out.println("X's Score: " + determinePlayerScore(fourtic.initialPosition, 'X'));
-        System.out.println("O's Score: " + determinePlayerScore(fourtic.initialPosition, 'O'));
+        System.out.println("X's Score: " + determineSinglePlayerScore(fourtic.initialPosition, 'X'));
+        System.out.println("O's Score: " + determineSinglePlayerScore(fourtic.initialPosition, 'O'));
 
         System.out.println("===================================");
+        fourtic.printBoard(fourtic.initialPosition);
         System.out.println("Games Over...");
         System.out.println("Tallying Scores...");
         Thread.sleep(5000);
